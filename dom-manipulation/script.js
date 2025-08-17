@@ -1,9 +1,12 @@
 const button = document.getElementById("newQuote");
+const syncButton = document.getElementById("syncQuotes");
 const quoteGenerator = document.querySelector("h1");
 const newQuote = document.getElementById("newQuoteText");
 const newQuoteCategory = document.getElementById("newQuoteCategory");
 const newQuoteButton = document.getElementById("addQuote");
-const quotes = [
+const notification = document.getElementById("notification");
+
+let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   {
     text: "The best way to get started is to quit talking and begin doing.",
     category: "Motivation",
@@ -159,5 +162,31 @@ function filterQuotes() {
       listDiv.appendChild(p);
     });
 }
+async function syncQuotes() {
+  try {
+    // Fetch server quotes
+    const res = await fetch(
+      "https://jsonplaceholder.typicode.com/posts?_limit=5"
+    );
+    const serverData = await res.json();
+
+    // Convert server posts to quotes
+    const serverQuotes = serverData.map((post) => ({
+      text: post.title,
+      category: "Server",
+    }));
+
+    // Conflict resolution: server takes precedence
+    quotes = [...serverQuotes, ...quotes];
+    saveQuotes();
+
+    notify("Synced with server. Server quotes take precedence.");
+    showRandomQuote();
+  } catch (err) {
+    notify("Error syncing with server.");
+    console.error(err);
+  }
+}
+setInterval(syncQuotes, 30000);
 populateCategories();
 filterQuotes();
