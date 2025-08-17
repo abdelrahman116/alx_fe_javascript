@@ -248,6 +248,43 @@ function fetchQuotesFromServer() {
       alert("Could not fetch quotes from server.");
     });
 }
+function showPopupMessage(message) {
+  // Create popup container
+  const popup = document.createElement("div");
+  popup.innerText = message;
+
+  // Style the popup
+  popup.style.position = "fixed";
+  popup.style.bottom = "20px";
+  popup.style.right = "20px";
+  popup.style.padding = "12px 20px";
+  popup.style.backgroundColor = "#333";
+  popup.style.color = "#fff";
+  popup.style.borderRadius = "8px";
+  popup.style.boxShadow = "0 4px 6px rgba(0,0,0,0.2)";
+  popup.style.zIndex = "1000";
+  popup.style.opacity = "0";
+  popup.style.transition = "opacity 0.3s ease";
+
+  // Add popup to body
+  document.body.appendChild(popup);
+
+  // Fade in
+  requestAnimationFrame(() => {
+    popup.style.opacity = "1";
+  });
+
+  // Auto-remove after 3 seconds
+  setTimeout(() => {
+    popup.style.opacity = "0";
+    setTimeout(() => {
+      popup.remove();
+    }, 300);
+  }, 3000);
+}
+
+// Example usage
+showPopupMessage("Quotes synced with server!");
 document
   .getElementById("fetch-quotes-btn")
   .addEventListener("click", fetchQuotesFromServer);
