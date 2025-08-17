@@ -1,5 +1,8 @@
 const button = document.getElementById("newQuote");
 const quoteGenerator = document.querySelector("h1");
+const newQuote = document.getElementById("newQuoteText");
+const newQuoteCategory = document.getElementById("newQuoteCategory");
+const newQuoteButton = document.getElementById("addQuote");
 const quotes = [
   {
     text: "The best way to get started is to quit talking and begin doing.",
@@ -35,4 +38,12 @@ function showRandomQuote(category) {
     quoteGenerator.innerHTML = quotes[randomIndex].text;
   }
 }
+function createAddQuoteForm() {
+  quotes.push({
+    text: newQuote.value,
+    category: newQuoteCategory.value,
+  });
+  console.log(quotes[quotes.length - 1]);
+}
+newQuoteButton.addEventListener("click", createAddQuoteForm);
 button.addEventListener("click", () => showRandomQuote(""));
