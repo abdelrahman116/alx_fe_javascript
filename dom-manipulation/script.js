@@ -162,30 +162,71 @@ function filterQuotes() {
       listDiv.appendChild(p);
     });
 }
+const API_URL = "https://jsonplaceholder.typicode.com/posts";
+
+// Sync quotes function
 async function syncQuotes() {
+  const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
   try {
-    // Fetch server quotes
-    const res = await fetch(
-      "https://jsonplaceholder.typicode.com/posts?_limit=5"
-    );
-    const serverData = await res.json();
+    // Send local quotes to server
+    for (const quote of localQuotes) {
+      if (!quote.synced) {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(quote),
+        });
+        quote.synced = true;
+      }
+    }
 
-    // Convert server posts to quotes
-    const serverQuotes = serverData.map((post) => ({
-      text: post.title,
-      category: "Server",
-    }));
+    // Save updated local storage
+    localStorage.setItem("quotes", JSON.stringify(localQuotes));
 
-    // Conflict resolution: server takes precedence
-    quotes = [...serverQuotes, ...quotes];
-    saveQuotes();
+    // Fetch latest quotes from server (mocked)
+    const response = await fetch(API_URL);
+    const serverQuotes = await response.json();
 
-    notify("Synced with server. Server quotes take precedence.");
-    showRandomQuote();
-  } catch (err) {
-    notify("Error syncing with server.");
-    console.error(err);
+    // Conflict resolution (simple: prefer local if duplicate id)
+    const merged = [...serverQuotes];
+    localQuotes.forEach((lq) => {
+      if (!merged.find((sq) => sq.id === lq.id)) {
+        merged.push(lq);
+      }
+    });
+
+    // Save merged data
+    localStorage.setItem("quotes", JSON.stringify(merged));
+
+    // Show UI notification
+    showNotification("Quotes synced successfully ✅");
+  } catch (error) {
+    showNotification("Sync failed ❌");
+    console.error("Sync error:", error);
   }
+}
+
+// Periodically sync every 30 seconds
+setInterval(syncQuotes, 30000);
+
+// Small UI notification
+function showNotification(message) {
+  let notif = document.getElementById("sync-notification");
+  if (!notif) {
+    notif = document.createElement("div");
+    notif.id = "sync-notification";
+    notif.style.position = "fixed";
+    notif.style.bottom = "10px";
+    notif.style.right = "10px";
+    notif.style.background = "#333";
+    notif.style.color = "#fff";
+    notif.style.padding = "8px 12px";
+    notif.style.borderRadius = "5px";
+    document.body.appendChild(notif);
+  }
+  notif.textContent = message;
+  setTimeout(() => notif.remove(), 4000);
 }
 function fetchQuotesFromServer() {
   // Example: fetching from a local quotes.json file
