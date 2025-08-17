@@ -22,17 +22,17 @@ const quotes = [
     category: "Wisdom",
   },
 ];
-function showRandomQuote(category) {
+function displayRandomQuote(category) {
   if (category != "") {
     quotes.forEach((quote) => {
       if (quote.category === category) {
-        quoteGenerator.textContent = quote.text;
+        quoteGenerator.innerHTML = quote.text;
         console.log(quote.text);
       }
     });
   } else {
     const randomIndex = Math.floor(Math.random() * quotes.length);
-    quoteGenerator.textContent = quotes[randomIndex].text;
+    quoteGenerator.innerHTML = quotes[randomIndex].text;
   }
 }
-button.addEventListener("click", () => showRandomQuote(""));
+button.addEventListener("click", () => displayRandomQuote(""));
