@@ -26,6 +26,7 @@ const quotes = [
   },
 ];
 function showRandomQuote(category) {
+  quoteDisplay.innerHTML = "";
   if (category != "") {
     quotes.forEach((quote) => {
       if (quote.category === category) {
@@ -36,14 +37,33 @@ function showRandomQuote(category) {
   } else {
     const randomIndex = Math.floor(Math.random() * quotes.length);
     quoteGenerator.innerHTML = quotes[randomIndex].text;
+    const p = document.createElement("p");
+    p.textContent = `"${randomQuote.text}" — ${randomQuote.category}`;
+
+    // append
+    quoteDisplay.appendChild(p);
   }
 }
 function createAddQuoteForm() {
-  quotes.push({
-    text: newQuote.value,
-    category: newQuoteCategory.value,
-  });
-  console.log(quotes[quotes.length - 1]);
+  const newText = newQuote.value.trim();
+  const newCategory = newQuoteCategory.value.trim();
+
+  if (newText && newCategory) {
+    // add to array
+    const newObj = { text: newText, category: newCategory };
+    quotes.push(newObj);
+
+    // create <p>
+    const p = document.createElement("p");
+    p.textContent = `"${newObj.text}" — ${newObj.category}`;
+
+    // append
+    quoteDisplay.appendChild(p);
+
+    // clear inputs
+    newQuote.value = "";
+    newQuoteCategory.value = "";
+  }
 }
 newQuoteButton.addEventListener("click", createAddQuoteForm);
 button.addEventListener("click", () => showRandomQuote(""));
