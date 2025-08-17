@@ -69,6 +69,8 @@ function createAddQuoteForm() {
     newQuote.value = "";
     newQuoteCategory.value = "";
     saveQuotes();
+    populateCategories();
+    filterQuotes();
   }
 }
 function exportToJsonFile() {
@@ -122,3 +124,40 @@ document.getElementById("import-btn").onclick = () => {
     alert("Please select a file first");
   }
 };
+
+function populateCategories() {
+  const filter = document.getElementById("categoryFilter");
+  filter.innerHTML = '<option value="all">All Categories</option>';
+
+  const categories = [...new Set(quotes.map((q) => q.category))];
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    filter.appendChild(option);
+  });
+
+  // restore last filter from localStorage
+  const savedFilter = localStorage.getItem("selectedCategory");
+  if (savedFilter) {
+    filter.value = savedFilter;
+    filterQuotes();
+  }
+}
+function filterQuotes() {
+  const selected = document.getElementById("categoryFilter").value;
+  localStorage.setItem("selectedCategory", selected);
+
+  const listDiv = document.getElementById("quote-list");
+  listDiv.innerHTML = "";
+
+  quotes
+    .filter((q) => selected === "all" || q.category === selected)
+    .forEach((q) => {
+      const p = document.createElement("p");
+      p.textContent = `"${q.text}" — ${q.category}`;
+      listDiv.appendChild(p);
+    });
+}
+populateCategories();
+filterQuotes();

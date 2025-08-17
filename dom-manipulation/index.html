@@ -17,7 +17,9 @@
       />
       <button id="addQuote" onclick="addQuote()">Add Quote</button>
       <button id="export-quotes">Export Quotes</button>
-
+      <select id="categoryFilter" onchange="filterQuotes()">
+        <option value="all">All Categories</option>
+      </select>
       <input type="file" id="import-file" accept="application/json" />
       <button id="import-btn">Import Quotes</button>
     </div>
