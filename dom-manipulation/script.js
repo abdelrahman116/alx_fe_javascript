@@ -22,7 +22,7 @@ const quotes = [
     category: "Wisdom",
   },
 ];
-function displayRandomQuote(category) {
+function showRandomQuote(category) {
   if (category != "") {
     quotes.forEach((quote) => {
       if (quote.category === category) {
@@ -35,4 +35,4 @@ function displayRandomQuote(category) {
     quoteGenerator.innerHTML = quotes[randomIndex].text;
   }
 }
-button.addEventListener("click", () => displayRandomQuote(""));
+button.addEventListener("click", () => showRandomQuote(""));
