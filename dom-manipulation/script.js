@@ -187,6 +187,30 @@ async function syncQuotes() {
     console.error(err);
   }
 }
+function fetchQuotesFromServer() {
+  // Example: fetching from a local quotes.json file
+  fetch("quotes.json")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch quotes from server");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Add quotes to your app's quotes array
+      quotes = data;
+      alert("Quotes fetched from server successfully!");
+      displayRandomQuote(); // optional: show one after fetching
+    })
+    .catch((error) => {
+      console.error("Error fetching quotes:", error);
+      alert("Could not fetch quotes from server.");
+    });
+}
+document
+  .getElementById("fetch-quotes-btn")
+  .addEventListener("click", fetchQuotesFromServer);
+
 setInterval(syncQuotes, 30000);
 populateCategories();
 filterQuotes();
