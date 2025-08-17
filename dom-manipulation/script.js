@@ -25,6 +25,7 @@ const quotes = [
     category: "Wisdom",
   },
 ];
+
 function showRandomQuote(category) {
   quoteDisplay.innerHTML = "";
   if (category != "") {
@@ -36,6 +37,7 @@ function showRandomQuote(category) {
     });
   } else {
     const randomIndex = Math.floor(Math.random() * quotes.length);
+    const randomQuote = quotes[randomIndex];
     quoteGenerator.innerHTML = quotes[randomIndex].text;
     const p = document.createElement("p");
     p.textContent = `"${randomQuote.text}" — ${randomQuote.category}`;
@@ -43,6 +45,9 @@ function showRandomQuote(category) {
     // append
     quoteDisplay.appendChild(p);
   }
+}
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 function createAddQuoteForm() {
   const newText = newQuote.value.trim();
@@ -63,7 +68,15 @@ function createAddQuoteForm() {
     // clear inputs
     newQuote.value = "";
     newQuoteCategory.value = "";
+    saveQuotes();
   }
 }
+
 newQuoteButton.addEventListener("click", createAddQuoteForm);
 button.addEventListener("click", () => showRandomQuote(""));
+const saved = localStorage.getItem("quotes");
+if (saved) {
+  const parsed = JSON.parse(saved);
+  quotes.length = 0; // clear default ones
+  quotes.push(...parsed); // load from storage
+}
