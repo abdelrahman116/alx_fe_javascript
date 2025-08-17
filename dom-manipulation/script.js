@@ -71,6 +71,22 @@ function createAddQuoteForm() {
     saveQuotes();
   }
 }
+function exportToJsonFile() {
+  const dataStr = JSON.stringify(quotes, null, 2); // pretty format
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+document
+  .getElementById("export-quotes")
+  .addEventListener("click", exportToJsonFile);
 
 newQuoteButton.addEventListener("click", createAddQuoteForm);
 button.addEventListener("click", () => showRandomQuote(""));
