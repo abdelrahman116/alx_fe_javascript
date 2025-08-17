@@ -96,3 +96,29 @@ if (saved) {
   quotes.length = 0; // clear default ones
   quotes.push(...parsed); // load from storage
 }
+function importFromJsonFile(file) {
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const importedQuotes = JSON.parse(event.target.result);
+      if (Array.isArray(importedQuotes)) {
+        quotes = quotes.concat(importedQuotes);
+        displayQuotes();
+      } else {
+        alert("Invalid file format");
+      }
+    } catch {
+      alert("Error reading file");
+    }
+  };
+  reader.readAsText(file);
+}
+
+document.getElementById("import-btn").onclick = () => {
+  const fileInput = document.getElementById("import-file");
+  if (fileInput.files.length > 0) {
+    importFromJsonFile(fileInput.files[0]);
+  } else {
+    alert("Please select a file first");
+  }
+};
